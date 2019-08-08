@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: ghost
+      MYSQL_PASSWORD: password
+    
+  ghost:
+    depends_on:
+      - mysql
+    build: ./ghost-cms
+    container_name: ghost
+    ports:
+      - "2368:2368"
+    environment:
+      database_client: mysql
+      database_connection_host: mysql
+      database_connection_user: ghost
+      database_connection_password: password
+      database_connection_database: db
+    restart: always
+
+volumes:
+  db_data: {}
